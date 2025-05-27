@@ -1,0 +1,114 @@
+class MenuItem:
+    def __init__(self, nombre, precio):
+        self._nombre = nombre
+        self._precio = precio
+
+    def calcular_precio(self):
+        return self._precio
+
+    def get_nombre(self):
+        return self._nombre
+
+    def get_precio(self):
+        return self._precio
+
+    def set_nombre(self, nombre):
+        self._nombre = nombre
+
+    def set_precio(self, precio):
+        self._precio = precio
+
+
+class Bebida(MenuItem):
+    def __init__(self, nombre, precio, sabor):
+        super().__init__(nombre, precio)
+        self._sabor = sabor
+
+    def get_sabor(self):
+        return self._sabor
+
+    def set_sabor(self, sabor):
+        self._sabor = sabor
+
+
+class Entrada(MenuItem):
+    def __init__(self, nombre, precio, tamano):
+        super().__init__(nombre, precio)
+        self._tamano = tamano
+
+    def get_tamano(self):
+        return self._tamano
+
+    def set_tamano(self, tamano):
+        self._tamano = tamano
+
+
+class Plato_principal(MenuItem):
+    def __init__(self, nombre, precio, proteina):
+        super().__init__(nombre, precio)
+        self._proteina = proteina
+
+    def get_proteina(self):
+        return self._proteina
+
+    def set_proteina(self, proteina):
+        self._proteina = proteina
+
+
+class Orden:
+    def __init__(self):
+        self.items = []
+
+    def add_item(self, item):
+        self.items.append(item)
+
+    def calcular_total(self):
+        total = sum(item.calcular_precio() for item in self.items)
+        return total
+
+    def calcular_con_descuento(self):
+        total = sum(item.calcular_precio() for item in self.items)
+        if len(self.items) >= 4:
+            return total * 0.9 
+        return total
+
+
+class Payment:
+    def __init__(self, amount):
+        self._amount = amount
+
+    def get_amount(self):
+        return self._amount
+
+    def set_amount(self, amount):
+        self._amount = amount
+
+    def pay_cash(self):
+        print(f"Pago en efectivo realizado por: ${self._amount:.2f}")
+
+    def pay_credit_card(self):
+        print(f"Pago con tarjeta por: ${self._amount:.2f}")
+
+menu = [Bebida("Jugo", 4000, "Mora"),
+    Bebida("Gaseosa", 3000, "Uva"),
+    Bebida("Té", 3500, "Limón"),
+    Entrada("Deditos de Queso", 8000, "4 unidades"),
+    Entrada("Alitas", 10000, "5 unidades"),
+    Entrada("Mini hamburguesas", 18000, "8 unidades"),
+    Plato_principal("Carne Asada", 20000, "res"),
+    Plato_principal("Pechuga gratinada", 17000, "pollo"),
+    Plato_principal("Ceviche", 23000, "camarón"),
+    Plato_principal("Cerdo a la plancha", 18000, "cerdo")]
+
+orden = Orden()
+orden.add_item(menu[2])
+orden.add_item(menu[3])
+orden.add_item(menu[4])
+orden.add_item(menu[5])
+
+print("Total sin descuento:", orden.calcular_total())
+print("Total con descuento aplicado:", orden.calcular_con_descuento())
+
+
+pago = Payment(orden.calcular_con_descuento())
+pago.pay_credit_card()
