@@ -1,0 +1,120 @@
+import math
+
+class Point:
+    def __init__(self, x: int, y: int):
+        self._x = x
+        self._y = y
+
+    def get_x(self):
+        return self._x
+
+    def get_y(self):
+        return self._y
+
+    def set_x(self, x: int):
+        self._x = x
+
+    def set_y(self, y: int):
+        self._y = y
+
+    def compute_distance(self, other: 'Point') -> float:
+        return math.sqrt((self._x - other.get_x())**2 + (self._y - other.get_y())**2)
+
+class Line:
+    def __init__(self, start_point: Point, end_point: Point):
+        self._start_point = start_point
+        self._end_point = end_point
+        self._length = self._compute_length()
+
+    def _compute_length(self):
+        return self._start_point.compute_distance(self._end_point)
+
+    def get_start_point(self):
+        return self._start_point
+
+    def get_end_point(self):
+        return self._end_point
+
+    def get_length(self):
+        return self._length
+
+    def set_start_point(self, point: Point):
+        self._start_point = point
+        self._length = self._compute_length()
+
+    def set_end_point(self, point: Point):
+        self._end_point = point
+        self._length = self._compute_length()
+
+class Shape:
+    def __init__(self, vertices: list[Point]):
+        self._vertices = vertices
+        self._edges = self._compute_edges()
+        self._inner_angles = []
+        self._is_regular = False
+
+    def get_vertices(self):
+        return self._vertices
+
+    def get_edges(self):
+        return self._edges
+
+    def get_inner_angles(self):
+        return self._inner_angles
+
+    def is_regular(self):
+        return self._is_regular
+
+    def _compute_edges(self):
+        edges = []
+        for i in range(len(self._vertices)):
+            start = self._vertices[i]
+            end = self._vertices[(i + 1) % len(self._vertices)]
+            edges.append(Line(start, end))
+        return edges
+
+    def compute_perimeter(self):
+        return sum(edge.get_length() for edge in self._edges)
+
+    def compute_area(self):
+        raise NotImplementedError("Subclasses must implement compute_area()")
+
+    def compute_inner_angles(self):
+        raise NotImplementedError("Subclasses must implement compute_inner_angles()")
+
+class Triangle(Shape):
+    def __init__(self, vertices: list[Point]):
+        if len(vertices) != 3:
+            raise ValueError("A triangle must have 3 vertices")
+        super().__init__(vertices)
+
+    def compute_area(self):
+        a, b, c = [edge.get_length() for edge in self.get_edges()]
+        s = (a + b + c) / 2
+        return math.sqrt(s * (s - a) * (s - b) * (s - c))
+
+    def compute_inner_angles(self):
+        pass
+class Isosceles(Triangle):
+    pass
+class Equilateral(Triangle):
+    pass
+class Scalene(Triangle):
+    pass
+class TriRectangle(Triangle):
+    pass
+
+class Rectangle(Shape):
+    def __init__(self, vertices: list[Point]):
+        if len(vertices) != 4:
+            raise ValueError("A rectangle must have 4 vertices")
+        super().__init__(vertices)
+
+    def compute_area(self):
+        edges = self.get_edges()
+        return edges[0].get_length() * edges[1].get_length()
+
+    def compute_inner_angles(self):
+        self._inner_angles = [90.0] * 4
+class Square(Rectangle):
+    pass
